@@ -3,6 +3,8 @@ from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 from django.shortcuts import render, redirect
 from .forms import PostForm
+from django.conf import settings
+from django.conf.urls.static import static
 
 def register(request):
     if request.method == 'POST':
