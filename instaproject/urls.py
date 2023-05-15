@@ -17,10 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from instaapp import views
-
+from .views import upload_photo
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/', views.register, name='register'),
+    path('', views.home, name='home'),  # Add this line for the 'home' URL pattern
+    path('upload/', upload_photo, name='upload_photo'),
 
 ]
+
