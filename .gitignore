@@ -1,0 +1,11 @@
+# .gitignore
+
+# Ignore Python compiled files
+__pycache__/
+*.py[cod]
+
+# Ignore Python virtual environments
+env/
+
+# Ignore SQLite database
+*.sqlite3
