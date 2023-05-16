@@ -41,8 +41,12 @@ INSTALLED_APPS = [
     'instaapp',
     'corsheaders',
     'rest_framework',
+    'insta_users',
 
 ]
+
+AUTH_USER_MODEL = 'insta_users.InstaUser'
+
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
