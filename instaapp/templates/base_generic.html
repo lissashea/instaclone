@@ -2,11 +2,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Website</title>
+  <title>{% block title %}My Website{% endblock %}</title>
+  <!-- Add your CSS files here -->
+  <link rel="stylesheet" href="path/to/your/css/file.css">
 </head>
 <body>
-  {% include 'sidebar.html' %}
+  <header>
+    <!-- Add your header content here -->
+    <h1>Welcome to My Website</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about/">About</a></li>
+        <!-- Add more navigation links as needed -->
+      </ul>
+    </nav>
+  </header>
+
+  <div id="sidebar">
+    {% include 'sidebar.html' %}
+  </div>
+
+  <main>
     {% block content %}
     {% endblock %}
+  </main>
+
+  <!-- Add your JavaScript files here -->
+  <!-- <script src="path/to/your/js/file.js"></script> -->
 </body>
 </html>

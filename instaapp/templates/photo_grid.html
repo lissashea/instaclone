@@ -1,7 +1,24 @@
-<div class="grid-container">
+{% extends 'base_generic.html' %}
+
+{% block content %}
   {% for post in posts %}
-    <div class="grid-item">
-      <img src="{{ post.image.url }}" alt="Post Image" width="200" height="200">
+    <div>
+      <img src="{{ post.image.url }}" alt="{{ post.caption }}">
+      <p>{{ post.caption }}</p>
+      <!-- Add comment form -->
+      <form method="post" action="{% url 'create_comment' post.id %}">
+        {% csrf_token %}
+        <input type="text" name="text" placeholder="Add a comment">
+        <button type="submit">Add Comment</button>
+      </form>
+      <!-- Delete comment form for each comment -->
+      {% for comment in post.comments.all %}
+        <p>{{ comment.text }}</p>
+        <form method="post" action="{% url 'delete_comment' comment.id %}">
+          {% csrf_token %}
+          <button type="submit">Delete Comment</button>
+        </form>
+      {% endfor %}
     </div>
   {% endfor %}
-</div>
+{% endblock %}

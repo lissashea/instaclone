@@ -1,16 +1,52 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
-from rest_framework import serializers
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PostForm
 from .models import UserProfile, Post, Comment
 from django.http import HttpResponseRedirect
-from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from .serializer import UserProfileSerializer, PostSerializer, CommentSerializer
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
+from django.shortcuts import render, redirect
+from django.shortcuts import render
+from django.views import View
+from django.contrib.auth.models import User
 
+class ProfileView(View):
+    def get(self, request):
+        # Retrieve the currently logged-in user
+        user = request.user
+
+        # Retrieve the posts associated with the user
+        posts = Post.objects.filter(user=user)
+
+        # Create the context dictionary with user and posts
+        context = {
+            'user': user,
+            'posts': posts,
+        }
+
+        # Render the profile.html template with the provided context
+        return render(request, 'profile.html', context)
+
+def profile(request):
+    # Retrieve the currently logged-in user
+    user = request.user
+
+    # Retrieve the posts associated with the user
+    posts = Post.objects.filter(user=user)
+
+    # Create the context dictionary with user and posts
+    context = {
+        'user': user,
+        'posts': posts,
+    }
+
+    # Render the profile.html template with the provided context
+    return render(request, 'profile.html', context)
 
 @api_view(['GET'])
 def get_all_users(request):
@@ -38,8 +74,9 @@ def register(request):
     }
     return render(request, 'register.html', context)
 
+@login_required
 def home(request):
-    posts = Post.objects.all()
+    posts = Post.objects.filter(user=request.user)
     context = {
         'posts': posts
     }
@@ -57,9 +94,14 @@ def upload_photo(request):
         form = PostForm()
     return render(request, 'upload_photo.html', {'form': form})
 
+@login_required
 def photo_grid(request):
-    posts = Post.objects.order_by('-created_at')
-    return render(request, 'home.html', {'posts': posts})  # Render the 'home.html' template instead of redirecting
+    user = request.user
+    posts = Post.objects.filter(user=user).order_by('-created_at')
+    context = {
+        'posts': posts
+    }
+    return render(request, 'photo_grid.html', context)
 
 def login_view(request):
     if request.method == 'POST':
@@ -81,6 +123,10 @@ def login_view(request):
         'user': request.user  # Add the 'user' object to the context
     }
     return render(request, 'login.html', context)
+
+def logout_view(request):
+    logout(request)
+    return render(request, 'logout.html')
 
 @api_view(['GET'])
 def get_user_profile(request, user_id):
@@ -120,7 +166,23 @@ def update_post(request, post_id):
     return Response(serializer.errors, status=400)
 
 @api_view(['DELETE'])
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    comment.delete()
+    return Response(status=204)
+
+@api_view(['DELETE'])
 def delete_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     post.delete()
     return Response(status=204)
+
+def create_comment(request, post_id):
+    if request.method == 'POST':
+        post = Post.objects.get(id=post_id)
+        text = request.POST.get('text')
+        comment = Comment.objects.create(post=post, text=text, user=request.user)  # Assign the user to the comment
+        return redirect('home')
+
+    # If the request method is not POST, render a template or return an appropriate response
+    return render(request, 'create_comment.html')

@@ -6,6 +6,7 @@ import Home from './Home.jsx';
 import Register from './Register.jsx';
 import UploadPhoto from './UploadPhoto.jsx';
 import Login from './Login.jsx';
+
 function App() {
   const [posts, setPosts] = useState([]);
 
