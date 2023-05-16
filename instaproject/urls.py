@@ -13,7 +13,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('upload/', views.upload_photo, name='upload_photo'),
-    path('grid/', views.photo_grid, name='photo_grid'),
+    path('photo_grid/', views.photo_grid, name='photo_grid'),
     path('create_post/', views.create_post_link, name='create_post_link'),
     path('home/', views.home, name='home'),
     path('accounts/profile/', views.profile, name='profile'),  # Add this line for the /accounts/profile/ URL
@@ -25,10 +25,12 @@ urlpatterns = [
     path('api/update_post/<int:post_id>/', views.update_post, name='update_post'),
     path('api/delete_post/<int:post_id>/', views.delete_post, name='delete_post'),
     path('delete_comment/<int:comment_id>/', views.delete_comment, name='delete_comment'),
-    path('create_comment/<int:post_id>/', create_comment, name='create_comment'),
+    path('create_comment/<int:post_id>/', views.create_comment, name='create_comment'),
     path('api/all_users/', views.get_all_users, name='get_all_users'),
     path('admin/', admin.site.urls),
     path('', lambda request: redirect('profile' if request.user.is_authenticated else 'login'), name='root'),
     path('signup/', views.register, name='signup'),
-    path('grid/', views.photo_grid, name='grid'),
+    path('grid/', views.grid, name='grid'),
+    path('photo_detail/<int:post_id>/', views.photo_detail, name='photo_detail'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

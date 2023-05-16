@@ -107,6 +107,13 @@ def grid(request):
     posts = Post.objects.all()
     return render(request, 'grid.html', {'posts': posts})
 
+def photo_detail(request, photo_id):
+    # Retrieve the photo object using the provided photo_id
+    photo = get_object_or_404(Photo, id=photo_id)
+    
+    # Render the photo detail template with the photo object
+    return render(request, 'photo_detail.html', {'photo': photo})
+
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -180,22 +187,6 @@ def delete_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     post.delete()
     return Response(status=204)
-
-def create_comment(request, post_id):
-    if request.method == 'POST':
-        post = Post.objects.get(id=post_id)
-        text = request.POST.get('text')  # Use 'text' instead of 'comment' to match the form field name
-        print('post_id:', post_id)
-        print('text:', text)
-        print('request.user:', request.user)
-        if text:
-            comment = Comment.objects.create(post=post, text=text, user=request.user)
-            # Retrieve all comments for the post
-            comments = post.comments.all()
-            return render(request, 'grid.html', {'posts': Post.objects.all(), 'comments': comments})
-        else:
-            return redirect('grid')  # Handle the case when the 'text' variable is empty
-    return redirect('grid')  # Or render an appropriate response in case of other request methods
 
 def create_comment(request, post_id):
     if request.method == 'POST':
