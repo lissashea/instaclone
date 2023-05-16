@@ -3,6 +3,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PostForm
+from instaapp.models import Post
 from .models import UserProfile, Post, Comment
 from django.http import HttpResponseRedirect
 from rest_framework.decorators import api_view
@@ -96,12 +97,15 @@ def upload_photo(request):
 
 @login_required
 def photo_grid(request):
-    user = request.user
-    posts = Post.objects.filter(user=user).order_by('-created_at')
+    posts = Post.objects.order_by('-created_at')
     context = {
         'posts': posts
     }
     return render(request, 'photo_grid.html', context)
+
+def grid(request):
+    posts = Post.objects.all()
+    return render(request, 'grid.html', {'posts': posts})
 
 def login_view(request):
     if request.method == 'POST':
@@ -180,9 +184,12 @@ def delete_post(request, post_id):
 def create_comment(request, post_id):
     if request.method == 'POST':
         post = Post.objects.get(id=post_id)
-        text = request.POST.get('text')
-        comment = Comment.objects.create(post=post, text=text, user=request.user)  # Assign the user to the comment
-        return redirect('home')
-
-    # If the request method is not POST, render a template or return an appropriate response
-    return render(request, 'create_comment.html')
+        text = request.POST.get('text')  # Use 'text' instead of 'comment' to match the form field name
+        if text:
+            comment = Comment.objects.create(post=post, text=text, user=request.user)
+            # Retrieve all comments for the post
+            comments = post.comments.all()
+            return render(request, 'grid.html', {'posts': Post.objects.all(), 'comments': comments})
+        else:
+            return redirect('grid')  # Handle the case when the 'text' variable is empty
+    return redirect('grid')  # Or render an appropriate response in case of other request methods

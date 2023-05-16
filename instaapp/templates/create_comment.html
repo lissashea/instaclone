@@ -1,0 +1,5 @@
+<form method="post" action="{% url 'create_comment' post.id %}">
+  {% csrf_token %}
+  <input type="text" name="comment">
+  <button type="submit">Submit</button>
+</form>

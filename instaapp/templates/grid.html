@@ -1,0 +1,18 @@
+{% extends 'base_generic.html' %}
+
+{% for post in posts %}
+    <!-- Display post content -->
+
+    <!-- Display comments for the post -->
+    {% for comment in post.comments.all %}
+    <p>{{ comment.text }}</p>
+{% endfor %}
+
+
+    <!-- Display comment form for the post -->
+    <form method="post" action="{% url 'create_comment' post.id %}">
+        {% csrf_token %}
+        <textarea name="text"></textarea>
+        <button type="submit">Add Comment</button>
+    </form>
+{% endfor %}

@@ -7,9 +7,6 @@ from instaapp.views import ProfileView
 from django.shortcuts import redirect
 from django.contrib.auth import views as auth_views
 from instaapp.views import create_comment
-from instaapp.views import ProfileView
-
-
 
 urlpatterns = [
     path('register/', views.register, name='register'),
@@ -33,8 +30,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', lambda request: redirect('profile' if request.user.is_authenticated else 'login'), name='root'),
     path('signup/', views.register, name='signup'),
-    path('accounts/profile/', views.ProfileView.as_view(), name='profile'),
     path('grid/', views.photo_grid, name='grid'),
-
-
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
