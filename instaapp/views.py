@@ -1,24 +1,30 @@
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login, authenticate
-from django.shortcuts import render, redirect
-from django.shortcuts import render, redirect
+from django.contrib.auth import login
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PostForm
-from django.conf import settings
-from django.conf.urls.static import static
+from .models import UserProfile, Post
 
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            print('User registered:', user.username)  # Debug print
             login(request, user)
-            return redirect('home')  # or where you want to redirect after a successful registration
+            return redirect('home')
+        else:
+            print('Form errors:', form.errors)  # Debug print
     else:
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})
 
 def home(request):
-    return render(request, 'home.html')
+    user_profile = get_object_or_404(UserProfile, user=request.user)
+
+    context = {
+        'user_profile': user_profile
+    }
+    return render(request, 'home.html', context)
 
 
 def upload_photo(request):
@@ -28,7 +34,11 @@ def upload_photo(request):
             post = form.save(commit=False)
             post.user = request.user
             post.save()
-            return redirect('home')  # or any other page after successful upload
+            return redirect('photo_grid')  # Redirect to the photo grid page after successful upload
     else:
         form = PostForm()
     return render(request, 'upload_photo.html', {'form': form})
+
+def photo_grid(request):
+    posts = Post.objects.order_by('-created_at')
+    return render(request, 'photo_grid.html', {'posts': posts})

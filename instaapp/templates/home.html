@@ -1,3 +1,7 @@
-<!-- instaproject/templates/home.html -->
-<h1>Welcome to My Website</h1>
-<p>This is the home page.</p>
+<h2>Welcome, {{ request.user.username }}!</h2>
+
+{% if user_profile.profile_picture %}
+  <img src="{{ user_profile.profile_picture.url }}" alt="Profile Picture">
+{% else %}
+  <p>No profile picture found.</p>
+{% endif %}
