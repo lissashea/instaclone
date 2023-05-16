@@ -185,6 +185,9 @@ def create_comment(request, post_id):
     if request.method == 'POST':
         post = Post.objects.get(id=post_id)
         text = request.POST.get('text')  # Use 'text' instead of 'comment' to match the form field name
+        print('post_id:', post_id)
+        print('text:', text)
+        print('request.user:', request.user)
         if text:
             comment = Comment.objects.create(post=post, text=text, user=request.user)
             # Retrieve all comments for the post
@@ -193,3 +196,15 @@ def create_comment(request, post_id):
         else:
             return redirect('grid')  # Handle the case when the 'text' variable is empty
     return redirect('grid')  # Or render an appropriate response in case of other request methods
+
+def create_comment(request, post_id):
+    if request.method == 'POST':
+        post = get_object_or_404(Post, id=post_id)
+        text = request.POST.get('text')  # Use 'text' instead of 'comment' to match the form field name
+        if text:
+            comment = Comment.objects.create(post=post, text=text, user=request.user)
+            # Redirect to the post detail page or wherever you want after successful comment creation
+            return redirect('photo_detail', post_id=post_id)
+        else:
+            return redirect('photo_grid')  # Handle the case when the 'text' variable is empty
+    return redirect('photo_grid')  # Or render an appropriate response in case of other request methods
