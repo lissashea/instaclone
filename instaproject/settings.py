@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'instaapp',
     'corsheaders',
+    'rest_framework',
 
 ]
 
@@ -59,9 +60,17 @@ MIDDLEWARE = [
 
 ]
 
+CSRF_COOKIE_SECURE = True
+
+LOGOUT_REDIRECT_URL = 'home'
+
+
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000/register']
+
 
 ROOT_URLCONF = 'instaproject.urls'
 
