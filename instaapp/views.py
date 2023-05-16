@@ -42,3 +42,20 @@ def upload_photo(request):
 def photo_grid(request):
     posts = Post.objects.order_by('-created_at')
     return render(request, 'photo_grid.html', {'posts': posts})
+from django.shortcuts import render
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponseRedirect
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return HttpResponseRedirect('/home/')  # Redirect to the desired page after successful login
+        else:
+            # Handle invalid login credentials
+            return render(request, 'login.html', {'error_message': 'Invalid username or password'})
+
+    return render(request, 'login.html')

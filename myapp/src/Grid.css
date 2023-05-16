@@ -1,0 +1,10 @@
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.grid-item {
+  width: 100%;
+  height: auto;
+}
